@@ -1,17 +1,14 @@
-from server.agent_executor import HelloWorldAgentExecutor
+from server.agent_executor import (
+    HelloWorldAgentExecutor,  # type: ignore[import-untyped]
+)
 
 from a2a.server.apps import A2AStarletteApplication
 from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
-from a2a.types import (
-    AgentAuthentication,
-    AgentCapabilities,
-    AgentCard,
-    AgentSkill,
-)
+from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 
 
-async def main():
+if __name__ == '__main__':
     skill = AgentSkill(
         id='hello_world',
         name='Returns hello world',
@@ -29,7 +26,6 @@ async def main():
         defaultOutputModes=['text'],
         capabilities=AgentCapabilities(streaming=True),
         skills=[skill],
-        authentication=AgentAuthentication(schemes=['public']),
     )
 
     request_handler = DefaultRequestHandler(
@@ -42,11 +38,4 @@ async def main():
     )
     import uvicorn
 
-    config = uvicorn.Config(server.build(), host='0.0.0.0', port=9999)
-    server = uvicorn.Server(config)
-    await server.serve()
-
-
-if __name__ == '__main__':
-    import asyncio
-    asyncio.run(main()) 
+    uvicorn.run(server.build(), host='0.0.0.0', port=9999)
